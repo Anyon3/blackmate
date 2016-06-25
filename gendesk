@@ -1,0 +1,10 @@
+[Desktop Entry]
+Name=default
+Icon=utilities-terminal
+Comment=
+TryExec=default
+Exec=default
+StartupNotify=true
+Terminal=true
+Type=Application
+Categories=default;
