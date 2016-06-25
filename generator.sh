@@ -3,6 +3,7 @@
 # First shot, considering this as an alpha version
 #
 # Description : Tools menu generator for gtk based desktop, tested on xfce4 and mate-desktop
+#               This will create new .desktop base on the tools list of BlackArch, those shall be move to /usr/share/applications/
 #
 # Author : Dimitri Mader -> dimitri@linux.com
 # Gnu / GPL v3
@@ -35,7 +36,7 @@
 
   elif [[ "$u" == 'malware' ]] || [[ "$u" == 'keylogger' ]] || [[ "$u" == 'backdoor' ]]; then
 
-     namecat=`echo X-BlackArch-Malware;`;
+    namecat=`echo X-BlackArch-Malware;`;
 
   elif [[ "$u" == 'networking' ]] || [[ "$u" == 'proxy' ]] || [[ "$u" == 'spoofer' ]] || [[ "$u" == 'tunnel' ]] || [[ "$u" == 'spoof' ]]; then
 
@@ -67,8 +68,8 @@ a=`cat categories/$u | sed 's/|/\n/g' | sed 's/http.*//' | sed '/^$/d' | sort -r
   for i in $a; do
 
          cat gendesk | sed -e 's/Name=.*/Name='$i'/' | sed -e 's/TryExec=.*/TryExec=\/usr\/bin\/'$i'/' | 
-					   sed 's/Exec=.*/Exec=sh -c '\''\/usr\/bin\/'$i' -Help;$SHELL'\''/' | 
-	                   sed -e 's/Categories=.*/Categories='$namecat'/' > ba-$i.desktop
+		       sed 's/Exec=.*/Exec=sh -c '\''\/usr\/bin\/'$i' -Help;$SHELL'\''/' | 
+	               sed -e 's/Categories=.*/Categories='$namecat'/' > ba-$i.desktop
   done
 
 done
