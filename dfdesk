@@ -1,0 +1,8 @@
+[Desktop Entry]
+Name=default
+Icon=utilities-terminal
+Comment=default
+Exec=default
+Terminal=True
+Type=Application
+Categories=default

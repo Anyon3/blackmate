@@ -2,16 +2,31 @@
 #
 # First shot, considering this as an alpha version
 #
-# Description : Tools menu generator for gtk based desktop, tested on xfce4 and mate-desktop
-#               This will create new .desktop base on the tools list of BlackArch, those shall be move to /usr/share/applications/
+# Description : BlackMate is a generator menu of the BlackArch tools for the window manager Mate
+#               This will create a new entry for the menu and generate for each categories, the .desktop launcher of the tools list.
+#				Make sure mate-terminal is available on your system
+#				This script need to be start as root 
 #
 # Author : Dimitri Mader -> dimitri@linux.com
 # Gnu / GPL v3
 
+#Check if the script is launch with root
+if [[ $EUID -ne 0 ]]; then
+   echo "This script must be run as root" 
+   exit 1
+fi
 
-  for u in $( ls categories/ | sort ); do
+#Clean any previous ba-*.desktop 
+rm /usr/share/applications/ba-*.desktop 2> /dev/null || true
 
-  cntools=`wc -l < categories/$u`;
+#Delete the entry Website and add the entry Misc 
+rm /usr/share/desktop-directories/BlackArch-Websites.directory 2> /dev/null || true
+cp BlackArch-Misc.directory /usr/share/applications/
+
+#Start to loop each categories
+for u in $( ls categories/ | sort ); do
+
+  #Set namecat var to his right categorie name
 
   if [[ "$u" == 'reversing ' ]] || [[ "$u" == 'disassembler' ]] || [[ "$u" == 'binary' ]] || [[ "$u" == 'code-audit' ]] || [[ "$u" == 'analysis' ]] || 
      [[ "$u" == 'debugger' ]] || [[ "$u" == 'decompiler' ]]; then
@@ -61,15 +76,26 @@
   else
 
      namecat=`echo X-BlackArch-Misc;`;
- fi
+fi
 
-a=`cat categories/$u | sed 's/|/\n/g' | sed 's/http.*//' | sed '/^$/d' | sort -r | head -n $cntools`;
+#Extract name of the tools 
+a=`cat categories/$u | awk -F '|' '{ print $1 }'`;
 
-  for i in $a; do
+#For each tools of the target categorie
+for i in $a; do
 
-         cat gendesk | sed -e 's/Name=.*/Name='$i'/' | sed -e 's/TryExec=.*/TryExec=\/usr\/bin\/'$i'/' | 
-		       sed 's/Exec=.*/Exec=sh -c '\''\/usr\/bin\/'$i' -Help;$SHELL'\''/' | 
-	               sed -e 's/Categories=.*/Categories='$namecat'/' > ba-$i.desktop
+  #Parse the default launcher and set his name
+  cat dfdesk | sed 's/^Name=.*/Name='$i'/' |
+			   #Set the bash command to execute
+               sed 's/^Exec=.*/Exec=mate-terminal -e "bash -ic \\"\/usr\/bin\/'$i'; exec bash"\\"/' |
+			   #Set the categorie to the launcher && Set the name file to ba-`toolsname`.desktop 
+	           sed 's/Categories=.*/Categories='$namecat';/' > ba-$i.desktop
+ 
+  #End of the current tool
   done
 
+#End of the current categorie
 done
+
+#Move the .desktop to the right directory
+mv ba-*.desktop /usr/share/applications
