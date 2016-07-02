@@ -86,10 +86,10 @@ for i in $a; do
 
   #Parse the default launcher and set his name
   cat dfdesk | sed 's/^Name=.*/Name='$i'/' |
-			   #Set the bash command to execute
+	       #Set the bash command to execute
                sed 's/^Exec=.*/Exec=mate-terminal -e "bash -ic \\"\/usr\/bin\/'$i'; exec bash"\\"/' |
-			   #Set the categorie to the launcher && Set the name file to ba-`toolsname`.desktop 
-	           sed 's/Categories=.*/Categories='$namecat';/' > ba-$i.desktop
+	       #Set the categorie to the launcher && Set the name file to ba-`toolsname`.desktop 
+	       sed 's/Categories=.*/Categories='$namecat';/' > ba-$i.desktop
  
   #End of the current tool
   done
