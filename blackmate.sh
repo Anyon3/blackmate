@@ -19,14 +19,14 @@ fi
 #Check if blackmate is running for this first time
 if [[ ! -f /usr/share/applications/BlackArch-Misc.directory ]]; then
 
-	echo "[*] Create the entry Misc";
+    echo "[*] Create the entry Misc";
 
-	#Clean any previous ba-*.desktop 
-	rm /usr/share/applications/ba-*.desktop 2> /dev/null || true
+    #Clean any previous ba-*.desktop 
+    rm /usr/share/applications/ba-*.desktop 2> /dev/null || true
 
-	#Delete the entry Website and add the entry Misc 
-	rm /usr/share/desktop-directories/BlackArch-Websites.directory 2> /dev/null || true
-	cp /usr/share/blackmate/BlackArch-Misc.directory /usr/share/applications
+    #Delete the entry Website and add the entry Misc 
+    rm /usr/share/desktop-directories/BlackArch-Websites.directory 2> /dev/null || true
+    cp /usr/share/blackmate/BlackArch-Misc.directory /usr/share/applications
 fi
 
 #Download and generate the latest tools list
