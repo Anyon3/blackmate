@@ -4,8 +4,7 @@
 #
 # Description : BlackMate is a menu generator for the BlackArch Linux os tools, made for the wm Mate.
 #               It will fetch the latest database of blackarch and generate the tools list
-#				You may run the script as often a new added tools is available
-#				This script need to be start as root 
+#		You may run the script as often a new added tools is available
 #
 # Author : Dimitri Mader -> dimitri@linux.com
 # Url : https://github.com/Anyon3/blackmate
@@ -20,14 +19,14 @@ fi
 #Check if blackmate is running for this first time
 if [[ ! -f /usr/share/applications/BlackArch-Misc.directory ]]; then
 
-		echo "[*] Create the entry Misc";
+	echo "[*] Create the entry Misc";
 
-		#Clean any previous ba-*.desktop 
-		rm /usr/share/applications/ba-*.desktop 2> /dev/null || true
+	#Clean any previous ba-*.desktop 
+	rm /usr/share/applications/ba-*.desktop 2> /dev/null || true
 
-		#Delete the entry Website and add the entry Misc 
-		rm /usr/share/desktop-directories/BlackArch-Websites.directory 2> /dev/null || true
-		cp /usr/share/blackmate/BlackArch-Misc.directory /usr/share/applications
+	#Delete the entry Website and add the entry Misc 
+	rm /usr/share/desktop-directories/BlackArch-Websites.directory 2> /dev/null || true
+	cp /usr/share/blackmate/BlackArch-Misc.directory /usr/share/applications
 fi
 
 #Download and generate the latest tools list
@@ -47,67 +46,67 @@ for u in $( ls --color=auto /usr/share/blackmate/tmp/ | sort ); do
 
   #Set categorie of the subcategorie tool branche
   if [[ $subc == 'reversing ' ]] || 
-	 [[ $subc == 'disassembler' ]] || 
-	 [[ $subc == 'binary' ]] || 
-	 [[ $subc == 'code-audit' ]] || 
+     [[ $subc == 'disassembler' ]] || 
+     [[ $subc == 'binary' ]] || 
+     [[ $subc == 'code-audit' ]] || 
      [[ $subc == 'analysis' ]] || 
      [[ $subc == 'debugger' ]] || 
-	 [[ $subc == 'decompiler' ]]; then
+     [[ $subc == 'decompiler' ]]; then
 
-		namecat=`echo X-BlackArch-CodeAnalysis;`;
+	namecat=`echo X-BlackArch-CodeAnalysis;`;
 
   elif [[ $subc == 'cracker' ]] || 
-	   [[ $subc == 'crypto' ]]; then
+       [[ $subc == 'crypto' ]]; then
      
-		namecat=`echo X-BlackArch-Cracking;`;
+	namecat=`echo X-BlackArch-Cracking;`;
 
   elif [[ $subc == 'defensive' ]] || 
-	   [[ $subc == 'honeypot' ]]; then
+       [[ $subc == 'honeypot' ]]; then
 
-		namecat=`echo X-BlackArch-Defensive;`;
+	namecat=`echo X-BlackArch-Defensive;`;
 
   elif [[ $subc == 'exploitation' ]] || 
-	   [[ $subc == 'automation' ]] || 
-	   [[ $subc == 'dos' ]]; then
+       [[ $subc == 'automation' ]] || 
+       [[ $subc == 'dos' ]]; then
 
-		namecat=`echo X-BlackArch-Exploitation;`;
+	namecat=`echo X-BlackArch-Exploitation;`;
 
   elif [[ $subc == 'anti-forensic' ]] || 
-	   [[ $subc == 'unpacker' ]] || 
+       [[ $subc == 'unpacker' ]] || 
        [[ $subc == 'forensic' ]] || 
        [[ $subc == 'packer' ]]; then
 
-		namecat=`echo X-BlackArch-Forensic;`;
+	namecat=`echo X-BlackArch-Forensic;`;
 
   elif [[ $subc == 'malware' ]] || 
-	   [[ $subc == 'keylogger' ]] || 
-	   [[ $subc == 'backdoor' ]]; then
+       [[ $subc == 'keylogger' ]] || 
+       [[ $subc == 'backdoor' ]]; then
 
-		namecat=`echo X-BlackArch-Malware;`;
+	namecat=`echo X-BlackArch-Malware;`;
 
   elif [[ $subc == 'networking' ]] || 
-	   [[ $subc == 'proxy' ]] || 
-	   [[ $subc == 'spoofer' ]] || 
+       [[ $subc == 'proxy' ]] || 
+       [[ $subc == 'spoofer' ]] || 
        [[ $subc == 'tunnel' ]] || 
        [[ $subc == 'spoof' ]]; then
 
-		namecat=`echo X-BlackArch-Networking;`;
+	namecat=`echo X-BlackArch-Networking;`;
 
   elif [[ $subc == 'bluetooth' ]] || 
-	   [[ $subc == 'nfc' ]] || 
- 	   [[ $subc == 'wireless' ]]; then
+       [[ $subc == 'nfc' ]] || 
+       [[ $subc == 'wireless' ]]; then
 
-		namecat=`echo X-BlackArch-Wireless;`;
+	namecat=`echo X-BlackArch-Wireless;`;
 
   elif [[ $subc == 'voip' ]] || 
-	   [[ $subc == 'mobile' ]]; then 
+       [[ $subc == 'mobile' ]]; then 
 
      	namecat=`echo X-BlackArch-Telephony;`;
 
   elif [[ $subc == 'scanner' ]] || 
-	   [[ $subc == 'fuzzer' ]] || 
-	   [[ $subc == 'fingerprint' ]] ||
-	   [[ $subc == 'recon' ]]; then
+       [[ $subc == 'fuzzer' ]] || 
+       [[ $subc == 'fingerprint' ]] ||
+       [[ $subc == 'recon' ]]; then
 
      	namecat=`echo X-BlackArch-Scanning;`;
 
@@ -123,12 +122,12 @@ fi
   #For each tools of the target categorie
   for i in $tname; do
 
-     #Parse the default launcher and set his name
-     cat /usr/share/blackmate/dfdesk | sed 's/^Name=.*/Name='$i'/' |
-			      #Set the bash command to execute
-                  sed 's/^Exec=.*/Exec=mate-terminal -e "bash -ic \\"\/usr\/bin\/'$i'; exec bash"\\"/' |
-			      #Set the categorie to the launcher && Set the name file to ba-`toolsname`.desktop 
-	              sed 's/Categories=.*/Categories='$namecat';/' > /usr/share/blackmate/ba-$i.desktop
+  #Parse the default launcher and set his name
+  cat /usr/share/blackmate/dfdesk | sed 's/^Name=.*/Name='$i'/' |
+  #Set the bash command to execute
+  sed 's/^Exec=.*/Exec=mate-terminal -e "bash -ic \\"\/usr\/bin\/'$i'; exec bash"\\"/' |
+  #Set the categorie to the launcher && Set the name file to ba-`toolsname`.desktop 
+  sed 's/Categories=.*/Categories='$namecat';/' > /usr/share/blackmate/ba-$i.desktop
  
   #End of the current tool
   done
