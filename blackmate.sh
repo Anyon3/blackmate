@@ -2,9 +2,10 @@
 #
 # Blackmate v0.1
 #
-# Description : BlackMate is a menu generator for the BlackArch Linux os tools, made for the wm Mate.
-#               It will fetch the latest database of blackarch and generate the tools list
-#		You may run the script as often a new added tools is available
+# Description : BlackMate is a menu generator for the BlackArch Linux os tools, made for the wm Mate and xfce4.
+#               It will fetch the latest database of BlackArch and create an entry for each of them in the menu
+#				You may run the script as often a new added tools is available
+#				The script can handle only 1 wm at the same time
 #
 # Author : Dimitri Mader -> dimitri@linux.com
 # Url : https://github.com/Anyon3/blackmate
@@ -12,11 +13,11 @@
 
 #Check if the script is launch with root
 if [[ $EUID -ne 0 ]]; then
-   echo "Blackman must be run as root" 
+   echo "Blackmate must be run as root" 
    exit 1
 fi
 
-#Check if blackmate is running for this first time
+#Check if blackmate is running for the first time
 if [[ ! -f /usr/share/applications/BlackArch-Misc.directory ]]; then
 
     echo "[*] Create the entry Misc";
@@ -33,6 +34,21 @@ fi
 mkdir /usr/share/blackmate/tmp
 wget -P /usr/share/blackmate/ https://mirror.yandex.ru/mirrors/blackarch/blackarch/os/x86_64/blackarch.db.tar.gz 
 tar -zxf /usr/share/blackmate/blackarch.db.tar.gz -C /usr/share/blackmate/tmp
+
+#Choice between xfce4 and Mate
+printf "For which wm Blackmate shall generate the menu ?\n\n [1] Mate\n [2] Xfce4\n\n Answer : ";
+
+read n
+
+  if [[ $n == '2' ]]; then
+
+	terminal=`echo xfce4-terminal`;
+
+  else
+	
+	terminal=`echo mate-terminal`;
+	
+  fi
 
 echo "[*] Generating the menu, please wait...";
 
@@ -125,7 +141,7 @@ fi
   #Parse the default launcher and set his name
   cat /usr/share/blackmate/dfdesk | sed 's/^Name=.*/Name='$i'/' |
   #Set the bash command to execute
-  sed 's/^Exec=.*/Exec=mate-terminal -e "bash -ic \\"\/usr\/bin\/'$i'; exec bash"\\"/' |
+  sed 's/^Exec=.*/Exec='$terminal' -e "bash -ic \\"\/usr\/bin\/'$i'; exec bash"\\"/' |
   #Set the categorie to the launcher && Set the name file to ba-`toolsname`.desktop 
   sed 's/Categories=.*/Categories='$namecat';/' > /usr/share/blackmate/ba-$i.desktop
  
