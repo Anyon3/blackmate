@@ -1,6 +1,6 @@
 #!/bin/bash
 #
-# Blackmate v0.1
+# Blackmate v0.2
 #
 # Description : BlackMate is a menu generator for the BlackArch Linux os tools, made for the wm Mate and xfce4.
 #               It will fetch the latest database of BlackArch and create an entry for each of them in the menu
