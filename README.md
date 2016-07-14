@@ -14,7 +14,7 @@ mv blackmate /usr/share/
 cd /usr/share/blackmate
 sh blackmate.sh
 ```
-## On BlackArch
+## With pacman
 
 ```
 sudo pacman -S blackmate
