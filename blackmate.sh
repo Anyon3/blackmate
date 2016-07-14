@@ -4,8 +4,8 @@
 #
 # Description : BlackMate is a menu generator for the BlackArch Linux os tools, made for the wm Mate and xfce4.
 #               It will fetch the latest database of BlackArch and create an entry for each of them in the menu
-#				You may run the script as often a new added tools is available
-#				The script can handle only 1 wm at the same time
+#		You may run the script as often a new added tools is available
+#		The script can handle only 1 wm at the same time
 #
 # Author : Dimitri Mader -> dimitri@linux.com
 # Url : https://github.com/Anyon3/blackmate
@@ -37,17 +37,12 @@ tar -zxf /usr/share/blackmate/blackarch.db.tar.gz -C /usr/share/blackmate/tmp
 
 #Choice between xfce4 and Mate
 printf "For which wm Blackmate shall generate the menu ?\n\n [1] Mate\n [2] Xfce4\n\n Answer : ";
-
 read n
 
   if [[ $n == '2' ]]; then
-
 	terminal=`echo xfce4-terminal`;
-
   else
-	
 	terminal=`echo mate-terminal`;
-	
   fi
 
 echo "[*] Generating the menu, please wait...";
@@ -129,9 +124,8 @@ for u in $( ls --color=auto /usr/share/blackmate/tmp/ | sort ); do
   elif [[ $subc == 'sniffer' ]]; then
 
      	namecat=`echo X-BlackArch-Sniffing;`;
-
   else
-
+  
      namecat=`echo X-BlackArch-Misc;`;
 fi
 
