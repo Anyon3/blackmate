@@ -1,0 +1,205 @@
+<!DOCTYPE Menu PUBLIC "-//freedesktop//DTD Menu 1.0//EN"
+"http://www.freedesktop.org/standards/menu-spec/menu-1.0.dtd">
+
+<Menu>
+	<Name>Applications</Name>
+	
+	<!-- BlackArch submenu -->
+	<Menu>
+		<Name>BlackArch</Name>
+		<Directory>BlackArch.directory</Directory>
+		<Include>
+			<Category>X-BlackArch</Category>
+		</Include>
+
+		<!-- Begin of Audit -->
+		<Menu>
+			<Name>Audit</Name>
+			<Directory>BlackArch-Audit.directory</Directory>
+			<Include>
+				<Category>X-BlackArch-Audit</Category>
+			</Include>
+		</Menu>
+		
+		<!-- Begin of Automation -->
+		<Menu>
+			<Name>Automation</Name>
+			<Directory>BlackArch-Automation.directory</Directory>
+			<Include>
+				<Category>X-BlackArch-Automation</Category>
+			</Include>
+		</Menu>
+		
+		<!-- Begin of Backdoor -->
+		<Menu>
+			<Name>Backdoor</Name>
+			<Directory>BlackArch-Backdoor.directory</Directory>
+			<Include>
+				<Category>X-BlackArch-Backdoor</Category>
+			</Include>
+		</Menu>
+		
+		<!-- Begin of Binary -->
+		<Menu>
+			<Name>Binary</Name>
+			<Directory>BlackArch-Binary.directory</Directory>
+			<Include>
+				<Category>X-BlackArch-Binary</Category>
+			</Include>
+		</Menu>
+		
+		<!-- Begin of Bluetooth -->
+		<Menu>
+			<Name>Bluetooth</Name>
+			<Directory>BlackArch-Bluetooth.directory</Directory>
+			<Include>
+				<Category>X-BlackArch-Bluetooth</Category>
+			</Include>
+		</Menu>
+		
+		<!-- Begin of Cracker -->
+		<Menu>
+			<Name>Cracker</Name>
+			<Directory>BlackArch-Cracker.directory</Directory>
+			<Include>
+				<Category>X-BlackArch-Cracker</Category>
+			</Include>
+		</Menu>
+		
+		<!-- Begin of Crypto -->
+		<Menu>
+			<Name>Crypto</Name>
+			<Directory>BlackArch-Crypto.directory</Directory>
+			<Include>
+				<Category>X-BlackArch-Crypto</Category>
+			</Include>
+		</Menu>
+		
+		<!-- Begin of Defensive -->
+		<Menu>
+			<Name>Defensive</Name>
+			<Directory>BlackArch-Defensive.directory</Directory>
+			<Include>
+				<Category>X-BlackArch-Defensive</Category>
+			</Include>
+		</Menu>
+		
+		<!-- Begin of Dos -->
+		<Menu>
+			<Name>Dos</Name>
+			<Directory>BlackArch-Dos.directory</Directory>
+			<Include>
+				<Category>X-BlackArch-Dos</Category>
+			</Include>
+		</Menu>
+		
+		<!-- Begin of Exploitation -->
+		<Menu>
+			<Name>Exploitation</Name>
+			<Directory>BlackArch-Exploitation.directory</Directory>
+			<Include>
+				<Category>X-BlackArch-Exploitation</Category>
+			</Include>
+		</Menu>
+		
+		<!-- Begin of Forensic -->
+		<Menu>
+			<Name>Forensic</Name>
+			<Directory>BlackArch-Forensic.directory</Directory>
+			<Include>
+				<Category>X-BlackArch-Forensic</Category>
+			</Include>
+		</Menu>	
+		
+		<!-- Begin of Honeypot -->
+		<Menu>
+			<Name>Honeypot</Name>
+			<Directory>BlackArch-Honeypot.directory</Directory>
+			<Include>
+				<Category>X-BlackArch-Honeypot</Category>
+			</Include>	
+		</Menu>
+			
+		<!-- Begin of Mobile -->
+		<Menu>
+			<Name>Mobile</Name>
+			<Directory>BlackArch-Mobile.directory</Directory>
+			<Include>
+				<Category>X-BlackArch-Mobile</Category>
+			</Include>
+		</Menu>	
+			
+		<!-- Begin of Networking -->
+		<Menu>
+			<Name>Networking</Name>
+			<Directory>BlackArch-Networking.directory</Directory>
+			<Include>
+				<Category>X-BlackArch-Networking</Category>
+			</Include>
+		</Menu>
+		
+		<!-- Begin of Scanning -->
+		<Menu>
+			<Name>Scanning</Name>
+			<Directory>BlackArch-Scanning.directory</Directory>
+			<Include>
+				<Category>X-BlackArch-Scanning</Category>
+			</Include>
+		</Menu>
+		
+		<!-- Begin of Sniffer -->
+		<Menu>
+			<Name>Sniffer</Name>
+			<Directory>BlackArch-Sniffer.directory</Directory>
+			<Include>
+				<Category>X-BlackArch-Sniffer</Category>
+			</Include>
+		</Menu>	
+		
+		<!-- Begin of Voip -->
+		<Menu>
+			<Name>Voip</Name>
+			<Directory>BlackArch-Voip.directory</Directory>
+			<Include>
+				<Category>X-BlackArch-Voip</Category>
+			</Include>
+		</Menu>
+		
+		<!-- Begin of Webapp -->
+		<Menu>
+			<Name>Webapp</Name>
+			<Directory>BlackArch-Webapp.directory</Directory>
+			<Include>
+				<Category>X-BlackArch-Webapp</Category>
+			</Include>
+		</Menu>
+		
+		<!-- Begin of Windows -->
+		<Menu>
+			<Name>Windows</Name>
+			<Directory>BlackArch-Windows.directory</Directory>
+			<Include>
+				<Category>X-BlackArch-Windows</Category>
+			</Include>
+		</Menu>
+		
+		<!-- Begin of Wireless -->
+		<Menu>
+			<Name>Wireless</Name>
+			<Directory>BlackArch-Wireless.directory</Directory>
+			<Include>
+				<Category>X-BlackArch-Wireless</Category>
+			</Include>
+		</Menu>
+		
+		<!-- Begin of Misc -->
+		<Menu>
+			<Name>Misc</Name>
+			<Directory>BlackArch-Misc.directory</Directory>
+			<Include>
+				<Category>X-BlackArch-Misc</Category>
+			</Include>
+		</Menu>
+		
+	</Menu>
+</Menu>

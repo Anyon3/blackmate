@@ -17,23 +17,34 @@ if [[ $EUID -ne 0 ]]; then
    exit 1
 fi
 
-#Check if blackmate is running for the first time
-if [[ ! -f /usr/share/applications/BlackArch-Misc.directory ]]; then
+   echo "[*] Creating the new menu entry";
 
-    echo "[*] Create the entry Misc";
+  #Clean any previous application entry and categorie entry
+  rm /usr/share/applications/ba-*.desktop 2> /dev/null || true 
+  rm /usr/share/desktop-directories/BlackArch*.directory 2> /dev/null || true
 
-    #Clean any previous ba-*.desktop 
-    rm /usr/share/applications/ba-*.desktop 2> /dev/null || true
+  #Update X.BlackArch.menu
+  cp /usr/share/blackmate/X-BlackArch.menu /etc/xdg/menus/applications-merged/X-BlackArch.menu
 
-    #Delete the entry Website and add the entry Misc 
-    rm /usr/share/desktop-directories/BlackArch-Websites.directory 2> /dev/null || true
-    cp /usr/share/blackmate/BlackArch-Misc.directory /usr/share/applications
-fi
+  #Copy the directory file BlackArch (Blackarch -> categorie -> tools...)
+  cp /usr/share/blackmate/BlackArch.directory /usr/share/desktop-directories/
 
-#Download and generate the latest tools list
-mkdir /usr/share/blackmate/tmp
-wget -P /usr/share/blackmate/ https://mirror.yandex.ru/mirrors/blackarch/blackarch/os/x86_64/blackarch.db.tar.gz 
-tar -zxf /usr/share/blackmate/blackarch.db.tar.gz -C /usr/share/blackmate/tmp
+  #Generate the new categorie entry menu
+  for u in $( ls --color=auto /usr/share/blackmate/menu-i/ | sort ); do  
+    
+    c=`echo $u | sed 's/BlackArch-//' | sed 's/\.png//'`;
+
+    cat /usr/share/blackmate/dfdir | sed 's/^Name=.*/Name='$c'/' | sed 's/^Icon=.*/Icon=BlackArch-'$c'/' > /usr/share/desktop-directories/BlackArch-$c.directory
+    
+  done
+ 
+  #Update the default icons of blackarch-menu by the blackmate one
+  cp /usr/share/blackmate/menu-i/* /usr/share/icons/hicolor/32x32/apps/ 2> /dev/null || true 
+
+  #Download and generate the latest tools list
+  mkdir /usr/share/blackmate/tmp
+  wget -P /usr/share/blackmate/ https://mirror.yandex.ru/mirrors/blackarch/blackarch/os/x86_64/blackarch.db.tar.gz 
+  tar -zxf /usr/share/blackmate/blackarch.db.tar.gz -C /usr/share/blackmate/tmp
 
 #Choice between xfce4 and Mate
 printf "For which wm Blackmate shall generate the menu ?\n\n [1] Mate\n [2] Xfce4\n\n Answer : ";
@@ -51,82 +62,101 @@ echo "[*] Generating the menu, please wait...";
 for u in $( ls --color=auto /usr/share/blackmate/tmp/ | sort ); do
 
    #Subcategorie
-   subc=`cat /usr/share/blackmate/tmp/$u/desc | sed 's/blackarch//' | sed '/^\s*$/d' | sed -n '/%GROUPS%/{n;p}' | cut -d "-" -f 2`;
+   subc=`cat /usr/share/blackmate/tmp/$u/desc | sed 's/blackarch//' | sed '/^\s*$/d' | sed -n '/%GROUPS%/{n;p}' | sed 's/-//'`;
+
+   #Check the group of the current tool, if empty, go to the next iteration
+   if [[ -z "$subc" ]]; then
+   	continue 1; 
+   fi
+   
    #Name of the tool
    tname=`cat /usr/share/blackmate/tmp/$u/desc | sed 's/blackarch//' | sed '/^\s*$/d' | sed -n '/%NAME%/{n;p}' | cut -d "-" -f 2`;
 
   #Set categorie of the subcategorie tool branche
-  if [[ $subc == 'reversing ' ]] || 
-     [[ $subc == 'disassembler' ]] || 
-     [[ $subc == 'binary' ]] || 
-     [[ $subc == 'code-audit' ]] || 
-     [[ $subc == 'analysis' ]] || 
-     [[ $subc == 'debugger' ]] || 
-     [[ $subc == 'decompiler' ]]; then
+  if [[ $subc == "code-audit" ]] || [[ $subc == 'decompiler' ]] || [[ $subc == 'disassembler' ]] || [[ $subc == 'reversing' ]]; then
 
-	namecat=`echo X-BlackArch-CodeAnalysis;`;
+    namecat=`echo X-BlackArch-Audit;`;
 
-  elif [[ $subc == 'cracker' ]] || 
-       [[ $subc == 'crypto' ]]; then
+  elif [[ $subc == 'automation' ]]; then
      
-	namecat=`echo X-BlackArch-Cracking;`;
+    namecat=`echo X-BlackArch-Automation;`;
 
-  elif [[ $subc == 'defensive' ]] || 
-       [[ $subc == 'honeypot' ]]; then
+  elif [[ $subc == 'backdoor' ]] || [[ $subc == 'keylogger' ]] || [[ $subc == 'malware' ]]; then
 
-	namecat=`echo X-BlackArch-Defensive;`;
+    namecat=`echo X-BlackArch-Backdoor;`;
 
-  elif [[ $subc == 'exploitation' ]] || 
-       [[ $subc == 'automation' ]] || 
-       [[ $subc == 'dos' ]]; then
+  elif [[ $subc == 'binary' ]]; then
 
-	namecat=`echo X-BlackArch-Exploitation;`;
+    namecat=`echo X-BlackArch-Binary;`;
 
-  elif [[ $subc == 'anti-forensic' ]] || 
-       [[ $subc == 'unpacker' ]] || 
-       [[ $subc == 'forensic' ]] || 
-       [[ $subc == 'packer' ]]; then
+  elif [[ $subc == 'bluetooth' ]]; then
 
-	namecat=`echo X-BlackArch-Forensic;`;
+    namecat=`echo X-BlackArch-Bluetooth;`;
 
-  elif [[ $subc == 'malware' ]] || 
-       [[ $subc == 'keylogger' ]] || 
-       [[ $subc == 'backdoor' ]]; then
+  elif [[ $subc == 'cracker' ]]; then
 
-	namecat=`echo X-BlackArch-Malware;`;
+    namecat=`echo X-BlackArch-Cracker;`;
 
-  elif [[ $subc == 'networking' ]] || 
-       [[ $subc == 'proxy' ]] || 
-       [[ $subc == 'spoofer' ]] || 
-       [[ $subc == 'tunnel' ]] || 
-       [[ $subc == 'spoof' ]]; then
+  elif [[ $subc == 'crypto' ]]; then
 
-	namecat=`echo X-BlackArch-Networking;`;
+    namecat=`echo X-BlackArch-Crypto;`;
 
-  elif [[ $subc == 'bluetooth' ]] || 
-       [[ $subc == 'nfc' ]] || 
-       [[ $subc == 'wireless' ]]; then
+  elif [[ $subc == 'defensive' ]]; then
 
-	namecat=`echo X-BlackArch-Wireless;`;
+    namecat=`echo X-BlackArch-Defensive;`;
 
-  elif [[ $subc == 'voip' ]] || 
-       [[ $subc == 'mobile' ]]; then 
+  elif [[ $subc == 'dos' ]]; then
 
-     	namecat=`echo X-BlackArch-Telephony;`;
+    namecat=`echo X-BlackArch-Dos;`;
 
-  elif [[ $subc == 'scanner' ]] || 
-       [[ $subc == 'fuzzer' ]] || 
-       [[ $subc == 'fingerprint' ]] ||
-       [[ $subc == 'recon' ]]; then
+  elif [[ $subc == 'exploitation' ]] || [[ $subc == 'social' ]] || [[ $subc == 'spoof' ]] || [[ $subc == 'fuzzer' ]]; then
 
-     	namecat=`echo X-BlackArch-Scanning;`;
+    namecat=`echo X-BlackArch-Exploitation;`;
+
+  elif [[ $subc == 'forensic' ]] || [[ $subc == "anti-forensic" ]]; then
+
+   namecat=`echo X-BlackArch-Forensic;`;
+
+  elif [[ $subc == 'honeypot' ]]; then
+
+   namecat=`echo X-BlackArch-Honeypot;`;
+
+  elif [[ $subc == 'mobile' ]]; then
+
+   namecat=`echo X-BlackArch-Mobile;`;
+ 
+  elif [[ $subc == 'networking' ]] || [[ $subc == 'fingerprint' ]] || [[ $subc == 'firmware' ]] || [[ $subc == 'tunnel' ]] ; then
+
+   namecat=`echo X-BlackArch-Networking;`;
+
+  elif [[ $subc == 'scanner' ]] || [[ $subc == 'recon' ]] ; then
+
+   namecat=`echo X-BlackArch-Scanning;`;
 
   elif [[ $subc == 'sniffer' ]]; then
 
-     	namecat=`echo X-BlackArch-Sniffing;`;
+   namecat=`echo X-BlackArch-Sniffer;`;
+
+  elif [[ $subc == 'voip' ]]; then
+
+   namecat=`echo X-BlackArch-Voip;`;
+
+  elif [[ $subc == 'webapp' ]]; then
+
+   namecat=`echo X-BlackArch-Webapp;`;
+
+  elif [[ $subc == 'windows' ]]; then
+
+   namecat=`echo X-BlackArch-Windows;`;
+
+  elif [[ $subc == 'wireless' ]]; then
+
+   namecat=`echo X-BlackArch-Wireless;`;
+
   else
-  
-     namecat=`echo X-BlackArch-Misc;`;
+
+   namecat=`echo X-BlackArch-Misc;`;
+
 fi
 
   #For each tools of the target categorie
