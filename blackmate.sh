@@ -1,11 +1,11 @@
 #!/bin/bash
 #
-# Blackmate v0.2
+# Blackmate v0.3
 #
 # Description : BlackMate is a menu generator for the BlackArch Linux os tools, made for the wm Mate and xfce4.
-#               It will fetch the latest database of BlackArch and create an entry for each of them in the menu
-#		You may run the script as often a new added tools is available
-#		The script can handle only 1 wm at the same time
+#                        It will fetch the latest database of BlackArch and create an entry for each of them in the menu
+#		      You may run the script as often a new added tools is available
+#		     The script can handle only 1 wm at the same time
 #
 # Author : Dimitri Mader -> dimitri@linux.com
 # Url : https://github.com/Anyon3/blackmate
@@ -56,7 +56,7 @@ read n
 	terminal=`echo mate-terminal`;
   fi
 
-echo "[*] Generating the menu, please wait...";
+printf "\n[*] Generating the menu, please wait...";
 
 #Start to loop each tools, set $subc as subcategorie and $tname as name of the tool 
 for u in $( ls --color=auto /usr/share/blackmate/tmp/ | sort ); do
@@ -175,7 +175,7 @@ fi
 #End of the current categorie
 done
 
-echo "[*] Cleanup...";
+printf "[*] Cleanup...";
 
 #Move the .desktop to the right directory
 mv /usr/share/blackmate/ba-*.desktop /usr/share/applications
