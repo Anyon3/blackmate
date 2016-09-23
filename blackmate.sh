@@ -1,23 +1,23 @@
 #!/bin/bash
 #
-# Blackmate v0.3
+# Blackmate v0.4
 #
-# Description : BlackMate is a menu generator for the BlackArch Linux os tools, made for the wm Mate and xfce4.
-#                        It will fetch the latest database of BlackArch and create an entry for each of them in the menu
-#		      You may run the script as often a new added tools is available
-#		     The script can handle only 1 wm at the same time
+# Description : BlackMate is a menu generator for the BlackArch Linux os tools, made for the wm xfce4.
+#               It will fetch the latest database of BlackArch and create an entry for each of them in the menu
+#		        You may run the script as often a new added tools is available
+#		  
 #
 # Author : Dimitri Mader -> dimitri@linux.com
 # Url : https://github.com/Anyon3/blackmate
 # Gnu / GPL v3
 
-#Check if the script is launch with root
+#Check if the script have the root permission
 if [[ $EUID -ne 0 ]]; then
-   echo "Blackmate must be run as root" 
+   echo "Blackmate must run with root permission (use sudo or the script will fail)" 
    exit 1
 fi
 
-   echo "[*] Creating the new menu entry";
+  printf "[*] Creating the new menu entry\n";
 
   #Clean any previous application entry and categorie entry
   rm /usr/share/applications/ba-*.desktop 2> /dev/null || true 
@@ -34,35 +34,42 @@ fi
     
     c=`echo $u | sed 's/BlackArch-//' | sed 's/\.png//'`;
 
-    cat /usr/share/blackmate/dfdir | sed 's/^Name=.*/Name='$c'/' | sed 's/^Icon=.*/Icon=BlackArch-'$c'/' > /usr/share/desktop-directories/BlackArch-$c.directory
+    cat /usr/share/blackmate/dfdir | sed 's/^Name=.*/Name='$c'/' | 
+	sed 's/^Icon=.*/Icon=BlackArch-'$c'/' > /usr/share/desktop-directories/BlackArch-$c.directory
     
   done
  
-  #Update the default icons of blackarch-menu by the blackmate one
-  cp /usr/share/blackmate/menu-i/* /usr/share/icons/hicolor/32x32/apps/ 2> /dev/null || true 
+  printf "[*] Update the icons theme in use\n";
+
+  #Fetch the current icons theme in use
+  thic=`cat /home/$SUDO_USER/.config/xfce4/xfconf/xfce-perchannel-xml/xsettings.xml | grep IconThemeName | 
+   		 sed 's/<property name="IconThemeName" type="string" value\="//' | tr -d '"/>' | tr -d ' '`;
+ 
+  #Copy the extra icons into the icons theme
+  cp /usr/share/blackmate/menu-i/* /usr/share/icons/$thic/32x32/apps/ 2> /dev/null || true
+  
+  #Set the proper chown and chmod
+  chown $SUDO_USER:$SUDO_USER /usr/share/icons/$thic/32x32/apps/ -R 2> /dev/null || true
+  chmod 755 /usr/share/icons/$thic/32x32/apps/ -R /dev/null || true
+
+  printf "[*] Download the tools list\n";
 
   #Download and generate the latest tools list
   mkdir /usr/share/blackmate/tmp
   wget -P /usr/share/blackmate/ https://mirror.yandex.ru/mirrors/blackarch/blackarch/os/x86_64/blackarch.db.tar.gz 
   tar -zxf /usr/share/blackmate/blackarch.db.tar.gz -C /usr/share/blackmate/tmp
 
-#Choice between xfce4 and Mate
-printf "For which wm Blackmate shall generate the menu ?\n\n [1] Mate\n [2] Xfce4\n\n Answer : ";
-read n
+  #Terminal to use for the blackarch entry
+  terminal=`echo xfce4-terminal`;
+  
+  printf "[*] Generating the menu, please wait...\n";
 
-  if [[ $n == '2' ]]; then
-	terminal=`echo xfce4-terminal`;
-  else
-	terminal=`echo mate-terminal`;
-  fi
+  #Start to loop each tools, set $subc as subcategorie and $tname as name of the tool 
+  for u in $( ls --color=auto /usr/share/blackmate/tmp/ | sort ); do
 
-printf "\n[*] Generating the menu, please wait...";
-
-#Start to loop each tools, set $subc as subcategorie and $tname as name of the tool 
-for u in $( ls --color=auto /usr/share/blackmate/tmp/ | sort ); do
-
-   #Subcategorie
-   subc=`cat /usr/share/blackmate/tmp/$u/desc | sed 's/blackarch//' | sed '/^\s*$/d' | sed -n '/%GROUPS%/{n;p}' | sed 's/-//'`;
+  #Subcategorie
+  subc=`cat /usr/share/blackmate/tmp/$u/desc | sed 's/blackarch//' | 
+        sed '/^\s*$/d' | sed -n '/%GROUPS%/{n;p}' | sed 's/-//'`;
 
    #Check the group of the current tool, if empty, go to the next iteration
    if [[ -z "$subc" ]]; then
@@ -70,10 +77,12 @@ for u in $( ls --color=auto /usr/share/blackmate/tmp/ | sort ); do
    fi
    
    #Name of the tool
-   tname=`cat /usr/share/blackmate/tmp/$u/desc | sed 's/blackarch//' | sed '/^\s*$/d' | sed -n '/%NAME%/{n;p}' | cut -d "-" -f 2`;
+   tname=`cat /usr/share/blackmate/tmp/$u/desc | sed 's/blackarch//' | 
+		  sed '/^\s*$/d' | sed -n '/%NAME%/{n;p}' | cut -d "-" -f 2`;
 
   #Set categorie of the subcategorie tool branche
-  if [[ $subc == "code-audit" ]] || [[ $subc == 'decompiler' ]] || [[ $subc == 'disassembler' ]] || [[ $subc == 'reversing' ]]; then
+  if [[ $subc == "code-audit" ]] || [[ $subc == 'decompiler' ]] || 
+     [[ $subc == 'disassembler' ]] || [[ $subc == 'reversing' ]]; then
 
     namecat=`echo X-BlackArch-Audit;`;
 
@@ -81,7 +90,8 @@ for u in $( ls --color=auto /usr/share/blackmate/tmp/ | sort ); do
      
     namecat=`echo X-BlackArch-Automation;`;
 
-  elif [[ $subc == 'backdoor' ]] || [[ $subc == 'keylogger' ]] || [[ $subc == 'malware' ]]; then
+  elif [[ $subc == 'backdoor' ]] || [[ $subc == 'keylogger' ]] || 
+       [[ $subc == 'malware' ]]; then
 
     namecat=`echo X-BlackArch-Backdoor;`;
 
@@ -109,7 +119,8 @@ for u in $( ls --color=auto /usr/share/blackmate/tmp/ | sort ); do
 
     namecat=`echo X-BlackArch-Dos;`;
 
-  elif [[ $subc == 'exploitation' ]] || [[ $subc == 'social' ]] || [[ $subc == 'spoof' ]] || [[ $subc == 'fuzzer' ]]; then
+  elif [[ $subc == 'exploitation' ]] || [[ $subc == 'social' ]] || 
+       [[ $subc == 'spoof' ]] || [[ $subc == 'fuzzer' ]]; then
 
     namecat=`echo X-BlackArch-Exploitation;`;
 
@@ -125,7 +136,8 @@ for u in $( ls --color=auto /usr/share/blackmate/tmp/ | sort ); do
 
    namecat=`echo X-BlackArch-Mobile;`;
  
-  elif [[ $subc == 'networking' ]] || [[ $subc == 'fingerprint' ]] || [[ $subc == 'firmware' ]] || [[ $subc == 'tunnel' ]] ; then
+  elif [[ $subc == 'networking' ]] || [[ $subc == 'fingerprint' ]] || 
+       [[ $subc == 'firmware' ]] || [[ $subc == 'tunnel' ]] ; then
 
    namecat=`echo X-BlackArch-Networking;`;
 
@@ -175,7 +187,7 @@ fi
 #End of the current categorie
 done
 
-printf "[*] Cleanup...";
+printf "[*] Cleanup...\n";
 
 #Move the .desktop to the right directory
 mv /usr/share/blackmate/ba-*.desktop /usr/share/applications
