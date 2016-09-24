@@ -3,8 +3,9 @@
 # Blackmate v0.4
 #
 # Description : BlackMate is a menu generator for the BlackArch Linux os tools, made for the wm xfce4.
-#               It will fetch the latest database of BlackArch and create an entry for each of them in the menu
-#		        You may run the script as often a new added tools is available
+#		It will fetch the latest database of BlackArch and create an entry for each of them in the menu.
+#		Start from the version 0.4, the support for mate desktop is removed.
+#		You may run the script as often a new added tools is available.
 #		  
 #
 # Author : Dimitri Mader -> dimitri@linux.com
@@ -50,7 +51,7 @@ fi
   
   #Set the proper chown and chmod
   chown $SUDO_USER:$SUDO_USER /usr/share/icons/$thic/32x32/apps/ -R 2> /dev/null || true
-  chmod 755 /usr/share/icons/$thic/32x32/apps/ -R /dev/null || true
+  chmod 755 /usr/share/icons/$thic/32x32/apps/ -R 2> /dev/null || true
 
   printf "[*] Download the tools list\n";
 
