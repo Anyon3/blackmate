@@ -12,11 +12,11 @@
 # Url : https://github.com/Anyon3/blackmate
 # Gnu / GPL v3
 
-#Check if the script have the root permission
-if [[ $EUID -ne 0 ]]; then
-   printf 'Blackmate must run with root permission (use sudo or the script will fail)';
-   exit 1;
-fi
+  #Check if the script have the root permission
+  if [[ $EUID -ne 0 ]]; then
+    printf 'Blackmate must run with root permission (use sudo or the script will fail)';
+    exit 1;
+  fi
 
   printf "[*] Creating the new menu entry\n";
 
@@ -31,12 +31,12 @@ fi
   cp /usr/share/blackmate/BlackArch.directory /usr/share/desktop-directories/
 
   #Generate the new categorie entry menu
-  for u in $( ls --color=auto /usr/share/blackmate/menu-i/ | sort ); do  
-    
+  for u in $( ls --color=auto /usr/share/blackmate/menu-i/ | sort ); do
+  
      c=`echo $u | sed 's/BlackArch-//' | sed 's/\.png//'`;
         cat /usr/share/blackmate/dfdir | sed 's/^Name=.*/Name='$c'/' | 
-	        sed 's/^Icon=.*/Icon=BlackArch-'$c'/' > /usr/share/desktop-directories/BlackArch-$c.directory
-    
+	sed 's/^Icon=.*/Icon=BlackArch-'$c'/' > /usr/share/desktop-directories/BlackArch-$c.directory 
+	
   done
 
   #Fetch the current icons theme in use 
@@ -44,12 +44,12 @@ fi
 
   if [[ -f /home/$SUDO_USER/.config/xfce4/xfconf/xfce-perchannel-xml/xsettings.xml ]]; then
 
-     thic=`cat /home/$SUDO_USER/.config/xfce4/xfconf/xfce-perchannel-xml/xsettings.xml | grep IconThemeName | 
-   		        sed 's/<property name="IconThemeName" type="string" value\="//' | tr -d '"/>' | tr -d ' '`;
+    thic=`cat /home/$SUDO_USER/.config/xfce4/xfconf/xfce-perchannel-xml/xsettings.xml | grep IconThemeName | 
+   	  sed 's/<property name="IconThemeName" type="string" value\="//' | tr -d '"/>' | tr -d ' '`;
 
   #If the file do not exist, we assume the current theme is the default one (gnome)
   else
-     thic=`echo gnome`;
+    thic=`echo gnome`;
   fi
  
   #Copy the extra icons into the icons theme
@@ -76,105 +76,105 @@ fi
 
 	  #Subcategorie
 	  subc=`cat /usr/share/blackmate/tmp/$u/desc | sed 's/blackarch//' | 
-		        sed '/^\s*$/d' | sed -n '/%GROUPS%/{n;p}' | sed 's/-//'`;
+		sed '/^\s*$/d' | sed -n '/%GROUPS%/{n;p}' | sed 's/-//'`;
 
 	   #Check the group of the current tool, if empty, go to the next iteration
 	   if [[ -z "$subc" ]]; then
-	   	  continue 1; 
+	     continue 1; 
 	   fi
 	   
 	   #Name of the tool
 	   tname=`cat /usr/share/blackmate/tmp/$u/desc | sed 's/blackarch//' | 
-			          sed '/^\s*$/d' | sed -n '/%NAME%/{n;p}' | cut -d "-" -f 2`;
+		  sed '/^\s*$/d' | sed -n '/%NAME%/{n;p}' | cut -d "-" -f 2`;
 
 	   #Set categorie of the subcategorie tool branche
 	   if [[ $subc == "code-audit" ]] || [[ $subc == 'decompiler' ]] || 
-		      [[ $subc == 'disassembler' ]] || [[ $subc == 'reversing' ]]; then
+	      [[ $subc == 'disassembler' ]] || [[ $subc == 'reversing' ]]; then
 
-    		namecat=`echo X-BlackArch-Audit;`;
+             namecat=`echo X-BlackArch-Audit;`;
 
 	   elif [[ $subc == 'automation' ]]; then
 		 
-    		namecat=`echo X-BlackArch-Automation;`;
+             namecat=`echo X-BlackArch-Automation;`;
 
 	   elif [[ $subc == 'backdoor' ]] || [[ $subc == 'keylogger' ]] || 
-		        [[ $subc == 'malware' ]]; then
+		[[ $subc == 'malware' ]]; then
 
-		    namecat=`echo X-BlackArch-Backdoor;`;
+	     namecat=`echo X-BlackArch-Backdoor;`;
 
 	   elif [[ $subc == 'binary' ]]; then
 
-		    namecat=`echo X-BlackArch-Binary;`;
+	     namecat=`echo X-BlackArch-Binary;`;
 
 	   elif [[ $subc == 'bluetooth' ]]; then
 
-		    namecat=`echo X-BlackArch-Bluetooth;`;
+	     namecat=`echo X-BlackArch-Bluetooth;`;
 
 	   elif [[ $subc == 'cracker' ]]; then
 
-		    namecat=`echo X-BlackArch-Cracker;`;
+	     namecat=`echo X-BlackArch-Cracker;`;
 
 	   elif [[ $subc == 'crypto' ]]; then
 
-		    namecat=`echo X-BlackArch-Crypto;`;
+	     namecat=`echo X-BlackArch-Crypto;`;
 
 	   elif [[ $subc == 'defensive' ]]; then
 
-		    namecat=`echo X-BlackArch-Defensive;`;
+	     namecat=`echo X-BlackArch-Defensive;`;
 
 	   elif [[ $subc == 'dos' ]]; then
 
-		    namecat=`echo X-BlackArch-Dos;`;
+	     namecat=`echo X-BlackArch-Dos;`;
 
 	   elif [[ $subc == 'exploitation' ]] || [[ $subc == 'social' ]] || 
-		        [[ $subc == 'spoof' ]] || [[ $subc == 'fuzzer' ]]; then
+		[[ $subc == 'spoof' ]] || [[ $subc == 'fuzzer' ]]; then
 
-	    namecat=`echo X-BlackArch-Exploitation;`;
+	     namecat=`echo X-BlackArch-Exploitation;`;
 
 	   elif [[ $subc == 'forensic' ]] || [[ $subc == "anti-forensic" ]]; then
 
-	    namecat=`echo X-BlackArch-Forensic;`;
+	     namecat=`echo X-BlackArch-Forensic;`;
 
 	   elif [[ $subc == 'honeypot' ]]; then
 
-	    namecat=`echo X-BlackArch-Honeypot;`;
+	     namecat=`echo X-BlackArch-Honeypot;`;
 
 	   elif [[ $subc == 'mobile' ]]; then
 
-	    namecat=`echo X-BlackArch-Mobile;`;
+	     namecat=`echo X-BlackArch-Mobile;`;
 	 
 	   elif [[ $subc == 'networking' ]] || [[ $subc == 'fingerprint' ]] || 
-		        [[ $subc == 'firmware' ]] || [[ $subc == 'tunnel' ]] ; then
+		[[ $subc == 'firmware' ]] || [[ $subc == 'tunnel' ]] ; then
 
-	    namecat=`echo X-BlackArch-Networking;`;
+	     namecat=`echo X-BlackArch-Networking;`;
 
 	   elif [[ $subc == 'scanner' ]] || [[ $subc == 'recon' ]] ; then
 
-	    namecat=`echo X-BlackArch-Scanning;`;
+	     namecat=`echo X-BlackArch-Scanning;`;
 
 	   elif [[ $subc == 'sniffer' ]]; then
 
-	    namecat=`echo X-BlackArch-Sniffer;`;
+	     namecat=`echo X-BlackArch-Sniffer;`;
 
 	   elif [[ $subc == 'voip' ]]; then
  
-	    namecat=`echo X-BlackArch-Voip;`;
+	     namecat=`echo X-BlackArch-Voip;`;
  
 	   elif [[ $subc == 'webapp' ]]; then
 
-	    namecat=`echo X-BlackArch-Webapp;`;
+	     namecat=`echo X-BlackArch-Webapp;`;
 
 	   elif [[ $subc == 'windows' ]]; then
 
-	    namecat=`echo X-BlackArch-Windows;`;
+	     namecat=`echo X-BlackArch-Windows;`;
  
 	   elif [[ $subc == 'wireless' ]]; then
 
-	    namecat=`echo X-BlackArch-Wireless;`;
+	     namecat=`echo X-BlackArch-Wireless;`;
 
 	   else
 
-	    namecat=`echo X-BlackArch-Misc;`;	
+	     namecat=`echo X-BlackArch-Misc;`;	
 
 	  fi
 
