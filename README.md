@@ -20,3 +20,4 @@ sh blackmate.sh
 sudo pacman -S blackmate
 sudo blackmate
 ```
+Code written by Dimitri Mader (dimitri@linux.com)
