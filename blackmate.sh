@@ -1,6 +1,6 @@
 #!/bin/bash
 #
-# Blackmate v0.41
+# Blackmate v0.42
 #
 # Description : BlackMate is a menu generator for the BlackArch Linux os tools, made for the wm xfce4.
 #		It will fetch the latest database of BlackArch and create an entry for each of them in the menu.
@@ -10,15 +10,28 @@
 #
 # Author : Dimitri Mader -> dimitri@linux.com
 # Url : https://github.com/Anyon3/blackmate
-# Gnu / GPL v3
+# Gnu / GPL v3 
 
   #Check if the script have the root permission
   if [[ $EUID -ne 0 ]]; then
-    printf 'Blackmate must run with root permission (use sudo or the script will fail)';
+    echo -e "\033[31m[ERROR]\e[0m Blackmate must run with root permission (use sudo or the script will fail)";
     exit 1;
   fi
 
-  printf "[*] Creating the new menu entry\n";
+  #Check if gtk-murrine engine is installed, if not, purpose to install it
+  if [[ ! -f /usr/share/gtk-engines/murrine.xml ]]; then
+     
+     echo -e "\033[31m[Warning]\e[0m gtk murrine engine is not installed, it is highly recommanded to install it in order to have a proper display of the categories icons, do you want to install it now ?";
+
+     select yn in "Yes" "No"; do
+	case $yn in
+	     Yes ) pacman -S --noconfirm gtk-engine-murrine; break;;
+	     No ) break;;
+	esac
+     done
+  fi
+
+  echo -e "\033[32m[*]\e[0m Creating the new menu entry";
 
   #Clean any previous application entry and categorie entry
   rm /usr/share/applications/ba-*.desktop 2> /dev/null || true 
@@ -40,7 +53,7 @@
   done
 
   #Fetch the current icons theme in use 
-  printf "[*] Update the icons theme in use\n";
+  echo -e "\033[32m[*]\e[0m Update the icons theme in use";
 
   if [[ -f /home/$SUDO_USER/.config/xfce4/xfconf/xfce-perchannel-xml/xsettings.xml ]]; then
 
@@ -60,16 +73,23 @@
   chmod 755 /usr/share/icons/$thic/32x32/apps/ -R 2> /dev/null || true
 
   #Download and generate the latest tools list
-  printf "[*] Download the tools list, please wait...\n";
+  echo -e "\033[32m[*]\e[0m Download the tools list, please wait...";
 
-  mkdir /usr/share/blackmate/tmp
+  #Check if the directory exist, if true, delete it (Fix any previous abort before the end...)
+  if [[ -d "/usr/share/blackmate/tmp" ]]; then
+     rm -rf /usr/share/blackmate/tmp 2> /dev/null || true
+  fi
+  
+  #Create temporary directory to store the tools list
+  mkdir /usr/share/blackmate/tmp 2> /dev/null || true
+
   wget -q -P /usr/share/blackmate/ https://mirror.yandex.ru/mirrors/blackarch/blackarch/os/x86_64/blackarch.db.tar.gz 
   tar -zxf /usr/share/blackmate/blackarch.db.tar.gz -C /usr/share/blackmate/tmp
 
   #Terminal to use for the blackarch entry
   terminal=`echo xfce4-terminal`;
   
-  printf "[*] Generating the menu, please wait...\n";
+  echo -e "\033[32m[*]\e[0m Generating the menu, please wait...";
 
   #Start to loop each tools, set $subc as subcategorie and $tname as name of the tool 
   for u in $( ls --color=auto /usr/share/blackmate/tmp/ | sort ); do
@@ -194,7 +214,7 @@
   #End of the current categorie
   done
 
-  printf "[*] Cleanup...\n";
+  echo -e "\033[32m[*]\e[0m Cleanup...";
 
   #Move the .desktop to the right directory
   mv /usr/share/blackmate/ba-*.desktop /usr/share/applications
@@ -203,4 +223,5 @@
   rm -rf /usr/share/blackmate/tmp/
   rm /usr/share/blackmate/blackarch.db.tar.gz
 
-  echo "[*] Done, in order to have a correct display of the new menu, you may need to restart xfce4";
+  echo -e "\033[32m[*]\e[0m Done, in order to have a correct display of the new menu, you may need to restart xfce4";
+
