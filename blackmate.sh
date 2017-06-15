@@ -1,6 +1,6 @@
 #!/bin/bash
 #
-# Blackmate v0.42
+# Blackmate v0.43
 #
 # Description : BlackMate is a menu generator for the BlackArch Linux os tools, made for the wm xfce4.
 #		It will fetch the latest database of BlackArch and create an entry for each of them in the menu.
@@ -29,6 +29,7 @@
 	     No ) break;;
 	esac
      done
+
   fi
 
   echo -e "\033[32m[*]\e[0m Creating the new menu entry";
@@ -68,8 +69,7 @@
   #Copy the extra icons into the icons theme
   cp /usr/share/blackmate/menu-i/* /usr/share/icons/$thic/32x32/apps/ 2> /dev/null || true
   
-  #Set the proper chown and chmod
-  chown $SUDO_USER:$SUDO_USER /usr/share/icons/$thic/32x32/apps/ -R 2> /dev/null || true
+  #Set the correct chmod
   chmod 755 /usr/share/icons/$thic/32x32/apps/ -R 2> /dev/null || true
 
   #Download and generate the latest tools list
@@ -100,12 +100,15 @@
 
 	   #Check the group of the current tool, if empty, go to the next iteration
 	   if [[ -z "$subc" ]]; then
-	     continue 1; 
+	     continue; 
 	   fi
 	   
 	   #Name of the tool
 	   tname=`cat /usr/share/blackmate/tmp/$u/desc | sed 's/blackarch//' | 
-		  sed '/^\s*$/d' | sed -n '/%NAME%/{n;p}' | cut -d "-" -f 2`;
+		 	   sed '/^\s*$/d' | sed -n '/%NAME%/{n;p}'`;
+
+	  #Check if the tool is installed on the system, otherwise skip to the next
+	  command -v $tname >/dev/null 2>&1 || { continue; }
 
 	   #Set categorie of the subcategorie tool branche
 	   if [[ $subc == "code-audit" ]] || [[ $subc == 'decompiler' ]] || 
@@ -217,11 +220,13 @@
   echo -e "\033[32m[*]\e[0m Cleanup...";
 
   #Move the .desktop to the right directory
-  mv /usr/share/blackmate/ba-*.desktop /usr/share/applications
+  mv /usr/share/blackmate/ba-*.desktop /usr/share/applications 2> /dev/null || true
 
   #Delete tmp directory
-  rm -rf /usr/share/blackmate/tmp/
-  rm /usr/share/blackmate/blackarch.db.tar.gz
+  rm -rf /usr/share/blackmate/tmp/ 2> /dev/null || true
+  rm /usr/share/blackmate/blackarch.db.tar.gz 2> /dev/null || true
+
+ #Delete any cache icons of the current theme
+ rm /usr/share/icons/Adwaita/icon-theme.cache 2> /dev/null || true
 
   echo -e "\033[32m[*]\e[0m Done, in order to have a correct display of the new menu, you may need to restart xfce4";
-
