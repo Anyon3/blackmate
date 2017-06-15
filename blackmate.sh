@@ -1,6 +1,6 @@
 #!/bin/bash
 #
-# Blackmate v0.43
+# Blackmate v0.43.1
 #
 # Description : BlackMate is a menu generator for the BlackArch Linux os tools, made for the wm xfce4.
 #		It will fetch the latest database of BlackArch and create an entry for each of them in the menu.
@@ -65,7 +65,10 @@
   else
     thic=`echo gnome`;
   fi
- 
+  
+  #Delete any cache icons of the current theme
+  rm /usr/share/icons/$thic/icon-theme.cache 2> /dev/null || true
+  
   #Copy the extra icons into the icons theme
   cp /usr/share/blackmate/menu-i/* /usr/share/icons/$thic/32x32/apps/ 2> /dev/null || true
   
@@ -225,8 +228,5 @@
   #Delete tmp directory
   rm -rf /usr/share/blackmate/tmp/ 2> /dev/null || true
   rm /usr/share/blackmate/blackarch.db.tar.gz 2> /dev/null || true
-
- #Delete any cache icons of the current theme
- rm /usr/share/icons/Adwaita/icon-theme.cache 2> /dev/null || true
 
   echo -e "\033[32m[*]\e[0m Done, in order to have a correct display of the new menu, you may need to restart xfce4";
